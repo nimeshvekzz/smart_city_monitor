@@ -5,19 +5,13 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
+// Overrides removed for compatibility with Gradle 8.x and Flutter 3.22+
 
-subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
-}
 subprojects {
     project.evaluationDependsOn(":app")
 }
+
+// Dependencies are now managed in settings.gradle.kts for modern Flutter projects.
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
