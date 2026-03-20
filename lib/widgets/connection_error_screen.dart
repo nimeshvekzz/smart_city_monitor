@@ -24,11 +24,11 @@ class ConnectionErrorScreen extends StatelessWidget {
                   Container(
                     width: 80, height: 80,
                     decoration: BoxDecoration(
-                      color: DesignTokens.alert.withValues(alpha: 0.1),
+                      color: DesignTokens.alert.withAlpha((255 * 0.1).toInt()),
                       shape: BoxShape.circle,
-                      border: Border.all(color: DesignTokens.alert.withValues(alpha: 0.3), width: 2),
+                      border: Border.all(color: DesignTokens.alert.withAlpha((255 * 0.3).toInt()), width: 2),
                       boxShadow: [
-                        BoxShadow(color: DesignTokens.alert.withValues(alpha: 0.2), blurRadius: 30),
+                        BoxShadow(color: DesignTokens.alert.withAlpha((255 * 0.2).toInt()), blurRadius: 30),
                       ],
                     ),
                     child: const Icon(Icons.wifi_off_rounded, color: DesignTokens.alert, size: 40),
@@ -67,19 +67,19 @@ class ConnectionErrorScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: DesignTokens.r12,
-                        border: Border.all(color: DesignTokens.cyan, width: 1.5),
+                        border: Border.all(color: DesignTokens.primary, width: 1.5),
                         boxShadow: [
-                          BoxShadow(color: DesignTokens.cyan.withValues(alpha: 0.1), blurRadius: 10),
+                          BoxShadow(color: DesignTokens.primary.withAlpha((255 * 0.1).toInt()), blurRadius: 10),
                         ],
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.refresh_rounded, color: DesignTokens.cyan, size: 18),
+                          Icon(Icons.refresh_rounded, color: DesignTokens.primary, size: 18),
                           SizedBox(width: 10),
                           Text('RETRY CONNECTION',
                             style: TextStyle(
-                              color: DesignTokens.cyan,
+                              color: DesignTokens.primary,
                               fontSize: 12,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 2,

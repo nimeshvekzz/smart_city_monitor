@@ -5,6 +5,7 @@ class HistoryEntry {
   final double gas;
   final double water;
   final double light;
+  final double hcSr04;
 
   const HistoryEntry({
     required this.nodeId,
@@ -13,5 +14,6 @@ class HistoryEntry {
     required this.gas,
     required this.water,
     required this.light,
+    required this.hcSr04,
   });
 }

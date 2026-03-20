@@ -1,4 +1,4 @@
-enum AlertType { fire, gas, water, light, system }
+enum AlertType { fire, gas, water, light, distance, system }
 enum AlertSeverity { high, medium, low, info }
 
 class AlertModel {
@@ -22,21 +22,23 @@ class AlertModel {
 
   String get typeLabel {
     switch (type) {
-      case AlertType.fire:   return 'Fire';
-      case AlertType.gas:    return 'Gas';
-      case AlertType.water:  return 'Water';
-      case AlertType.light:  return 'Light';
-      case AlertType.system: return 'System';
+      case AlertType.fire:     return 'Fire';
+      case AlertType.gas:      return 'Gas';
+      case AlertType.water:    return 'Water';
+      case AlertType.light:    return 'Light';
+      case AlertType.distance: return 'Distance';
+      case AlertType.system:   return 'System';
     }
   }
 
   AlertSeverity get severity {
     switch (type) {
-      case AlertType.fire:   return AlertSeverity.high;
-      case AlertType.gas:    return AlertSeverity.medium;
-      case AlertType.water:  return AlertSeverity.medium;
-      case AlertType.light:  return AlertSeverity.low;
-      case AlertType.system: return AlertSeverity.info;
+      case AlertType.fire:     return AlertSeverity.high;
+      case AlertType.gas:      return AlertSeverity.medium;
+      case AlertType.water:    return AlertSeverity.medium;
+      case AlertType.light:    return AlertSeverity.low;
+      case AlertType.distance: return AlertSeverity.high;
+      case AlertType.system:   return AlertSeverity.info;
     }
   }
 

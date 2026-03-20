@@ -19,6 +19,7 @@ class SensorNode {
   final SensorData gas;    // ppm
   final SensorData water;  // cm
   final SensorData light;  // lux
+  final SensorData hcSr04; // distance cm
 
   const SensorNode({
     required this.id,
@@ -27,10 +28,11 @@ class SensorNode {
     required this.gas,
     required this.water,
     required this.light,
+    required this.hcSr04,
   });
 
   SensorStatus get overallStatus {
-    final statuses = [fire.status, gas.status, water.status, light.status];
+    final statuses = [fire.status, gas.status, water.status, light.status, hcSr04.status];
     if (statuses.contains(SensorStatus.alert)) return SensorStatus.alert;
     if (statuses.contains(SensorStatus.warning)) return SensorStatus.warning;
     return SensorStatus.safe;

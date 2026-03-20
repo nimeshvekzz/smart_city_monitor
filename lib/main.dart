@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'theme/app_theme.dart';
@@ -10,7 +9,6 @@ import 'screens/alerts_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/profile_screen.dart';
 
-import 'widgets/city_background.dart';
 import 'widgets/connection_error_screen.dart';
 
 void main() {
@@ -25,7 +23,7 @@ class SmartCityApp extends StatefulWidget {
 }
 
 class _SmartCityAppState extends State<SmartCityApp> {
-  ThemeMode _themeMode = ThemeMode.dark;
+  ThemeMode _themeMode = ThemeMode.light;
 
   void _toggleTheme() {
     setState(() {
@@ -69,42 +67,29 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     
-    // Listen for real-time notifications from DataService
     _notificationSub = DataService().notifications.listen((msg) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline_rounded, color: DesignTokens.alert, size: 20),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(msg, 
-                    style: TextStyle(
-                      fontFamily: 'RobotoMono', 
-                      fontSize: 12, 
-                      fontWeight: FontWeight.w600,
-                      color: DesignTokens.textPrimary,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    setState(() => _currentIndex = 1); // Go to Alerts
-                  },
-                  child: const Text('VIEW', style: TextStyle(color: DesignTokens.cyan, fontWeight: FontWeight.bold)),
-                ),
-              ],
+            content: Text(msg, 
+              style: GoogleFonts.outfit(
+                fontSize: 14, 
+                fontWeight: FontWeight.w500,
+                color: DesignTokens.textPrimary,
+              ),
             ),
-            backgroundColor: DesignTokens.surface.withValues(alpha: 0.95),
+            backgroundColor: DesignTokens.surface,
             behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 90),
+            elevation: 4,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: DesignTokens.alert.withValues(alpha: 0.5), width: 1),
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: DesignTokens.border),
             ),
-            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'VIEW',
+              textColor: DesignTokens.primary,
+              onPressed: () => setState(() => _currentIndex = 1),
+            ),
           ),
         );
       }
@@ -120,7 +105,7 @@ class _MainShellState extends State<MainShell> {
   }
 
   Future<void> _simulateStartup() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1)); // Reduced delay
     if (mounted) {
       setState(() => _isLoading = false);
     }
@@ -131,9 +116,8 @@ class _MainShellState extends State<MainShell> {
     if (_hasError) return ConnectionErrorScreen(onRetry: () => setState(() => _hasError = false));
     if (_isLoading) return _buildLoadingSplash();
 
-    // Rebuild screen list on every build to stay reactive to themeMode changes
     final List<Widget> screens = [
-      DashboardScreen(),
+      const DashboardScreen(),
       const AlertsScreen(),
       const HistoryScreen(),
       ProfileScreen(
@@ -144,21 +128,15 @@ class _MainShellState extends State<MainShell> {
     ];
 
     return Scaffold(
-      backgroundColor: DesignTokens.bg,
-      body: Stack(
-        children: [
-          // Global animated city background
-          Positioned.fill(
-            child: CityBackground(nodes: DataService().nodes), // Assuming DataService().nodes is available
-          ),
-          IndexedStack(
-            index: _currentIndex, // Changed from _selectedIndex to _currentIndex to match existing state
-            children: screens,
-          ),
-          Positioned(
-            left: 20, right: 20, bottom: 20,
-            child: _buildHUDNav(),
-          ),
+      body: screens[_currentIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) => setState(() => _currentIndex = index),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.grid_view_rounded), label: 'Dashboard'),
+          NavigationDestination(icon: Icon(Icons.sensors_rounded), label: 'Alerts'),
+          NavigationDestination(icon: Icon(Icons.analytics_rounded), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.person_rounded), label: 'Profile'),
         ],
       ),
     );
@@ -171,85 +149,27 @@ class _MainShellState extends State<MainShell> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.security_rounded, color: DesignTokens.cyan, size: 64),
+            Icon(Icons.security_rounded, color: DesignTokens.primary, size: 48),
             const SizedBox(height: 24),
-            Text('INITIALIZING SYSTEM',
-              style: GoogleFonts.robotoMono(
+            Text('SMART CITY MONITOR',
+              style: GoogleFonts.outfit(
                 color: DesignTokens.textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 4,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             SizedBox(
-              width: 200,
+              width: 140,
               child: LinearProgressIndicator(
                 backgroundColor: DesignTokens.border,
-                valueColor: const AlwaysStoppedAnimation(DesignTokens.cyan),
+                valueColor: AlwaysStoppedAnimation(DesignTokens.primary),
+                minHeight: 2,
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildHUDNav() {
-    bool isDark = widget.themeMode == ThemeMode.dark;
-    return Container(
-      height: 70,
-      decoration: BoxDecoration(
-        color: DesignTokens.surface.withValues(alpha: 0.85),
-        borderRadius: DesignTokens.r24,
-        border: Border.all(color: DesignTokens.border, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: DesignTokens.r24,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _navItem(0, Icons.grid_view_rounded, 'DASHBOARD'),
-              _navItem(1, Icons.sensors_rounded, 'ALERTS'),
-              _navItem(2, Icons.analytics_rounded, 'HISTORY'),
-              _navItem(3, Icons.person_rounded, 'PROFILE'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _navItem(int index, IconData icon, String label) {
-    bool isSelected = _currentIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
-      behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, 
-            color: isSelected ? DesignTokens.cyan : DesignTokens.textMuted,
-            size: isSelected ? 28 : 24,
-          ),
-          const SizedBox(height: 4),
-          Text(label, 
-            style: GoogleFonts.robotoMono(
-              color: isSelected ? DesignTokens.cyan : DesignTokens.textMuted,
-              fontSize: 9,
-              fontWeight: isSelected ? FontWeight.w900 : FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }

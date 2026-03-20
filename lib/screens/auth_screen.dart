@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';
 import '../widgets/cyber_background.dart';
@@ -119,10 +118,10 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: DesignTokens.cyan.withValues(alpha: 0.5), width: 2),
+            border: Border.all(color: DesignTokens.primary.withAlpha((255 * 0.5).toInt()), width: 2),
             boxShadow: [
               BoxShadow(
-                color: DesignTokens.cyan.withValues(alpha: 0.2),
+                color: DesignTokens.primary.withAlpha((255 * 0.2).toInt()),
                 blurRadius: 20,
                 spreadRadius: 2,
               ),
@@ -130,7 +129,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
           ),
           child: const Icon(
             Icons.security_rounded,
-            color: DesignTokens.cyan,
+            color: DesignTokens.primary,
             size: 48,
           ),
         ),
@@ -139,7 +138,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
           _isLogin ? 'SYSTEM ACCESS' : 'ENROLL NEW OPERATOR',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: DesignTokens.cyan,
+            color: DesignTokens.primary,
             fontSize: 20,
             fontWeight: FontWeight.w800,
             letterSpacing: 4,
@@ -224,16 +223,16 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
         width: double.infinity,
         height: 56,
         decoration: BoxDecoration(
-          color: _isLoading ? DesignTokens.surface : DesignTokens.cyan.withValues(alpha: 0.1),
+          color: _isLoading ? DesignTokens.surface : DesignTokens.primary.withAlpha((255 * 0.1).toInt()),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: _isLoading ? DesignTokens.border : DesignTokens.cyan.withValues(alpha: 0.5),
+            color: _isLoading ? DesignTokens.border : DesignTokens.primary.withAlpha((255 * 0.5).toInt()),
             width: 1.5,
           ),
           boxShadow: [
             if (!_isLoading)
               BoxShadow(
-                color: DesignTokens.cyan.withValues(alpha: 0.1),
+                color: DesignTokens.primary.withAlpha((255 * 0.1).toInt()),
                 blurRadius: 12,
                 spreadRadius: -2,
               ),
@@ -246,13 +245,13 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                   width: 24,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(DesignTokens.cyan),
+                    valueColor: AlwaysStoppedAnimation(DesignTokens.primary),
                   ),
                 )
               : Text(
                   _isLogin ? 'INITIALIZE LOGIN' : 'COMPLETE REGISTRATION',
                   style: const TextStyle(
-                    color: DesignTokens.cyan,
+                    color: DesignTokens.primary,
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 2,
@@ -279,7 +278,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             TextSpan(
               text: _isLogin ? "REGISTER" : "LOGIN",
               style: const TextStyle(
-                color: DesignTokens.cyan,
+                color: DesignTokens.primary,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1,
               ),
@@ -333,7 +332,7 @@ class _CustomTextField extends StatelessWidget {
           obscureText: obscureText,
           keyboardType: keyboardType,
           validator: validator,
-          cursorColor: DesignTokens.cyan,
+          cursorColor: DesignTokens.primary,
           style: TextStyle(
             color: DesignTokens.textPrimary,
             fontSize: 15,
@@ -341,10 +340,10 @@ class _CustomTextField extends StatelessWidget {
           ),
           decoration: InputDecoration(
             filled: true,
-            fillColor: DesignTokens.surface.withValues(alpha: 0.5),
+            fillColor: DesignTokens.surface.withAlpha((255 * 0.5).toInt()),
             hintText: hint,
             hintStyle: TextStyle(
-              color: DesignTokens.textMuted.withValues(alpha: 0.5),
+              color: DesignTokens.textMuted.withAlpha((255 * 0.5).toInt()),
               fontSize: 14,
             ),
             prefixIcon: Icon(icon, color: DesignTokens.textSecondary, size: 20),
@@ -355,7 +354,7 @@ class _CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: DesignTokens.cyan, width: 1.5),
+              borderSide: const BorderSide(color: DesignTokens.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

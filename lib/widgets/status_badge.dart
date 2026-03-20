@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/sensor_node.dart';
 import '../theme/design_tokens.dart';
 
@@ -27,30 +28,29 @@ class StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: compact ? 6 : 10,
-        vertical: compact ? 2 : 4,
+        horizontal: compact ? 8 : 12,
+        vertical: compact ? 3 : 6,
       ),
       decoration: BoxDecoration(
-        color: _color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _color.withValues(alpha: 0.6), width: 1),
+        color: _color.withAlpha((255 * 0.1).toInt()),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: compact ? 5 : 7,
-            height: compact ? 5 : 7,
+            width: compact ? 6 : 8,
+            height: compact ? 6 : 8,
             decoration: BoxDecoration(color: _color, shape: BoxShape.circle),
           ),
-          SizedBox(width: compact ? 3 : 5),
+          SizedBox(width: compact ? 6 : 8),
           Text(
             _label,
-            style: TextStyle(
+            style: GoogleFonts.outfit(
               color: _color,
-              fontSize: compact ? 9 : 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
+              fontSize: compact ? 10 : 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/sensor_node.dart';
 import '../models/alert_model.dart';
 import '../theme/design_tokens.dart';
@@ -7,224 +8,124 @@ import 'status_badge.dart';
 class AlertCard extends StatelessWidget {
   final AlertModel alert;
   final VoidCallback? onResolve;
+
   const AlertCard({super.key, required this.alert, this.onResolve});
 
   Color get _typeColor {
     switch (alert.type) {
-      case AlertType.fire:   return DesignTokens.alert;
-      case AlertType.gas:    return DesignTokens.warning;
-      case AlertType.water:  return DesignTokens.cyan;
-      case AlertType.light:  return const Color(0xFFA855F7);
-      case AlertType.system: return DesignTokens.cyanDim;
+      case AlertType.fire:     return DesignTokens.alert;
+      case AlertType.gas:      return DesignTokens.warning;
+      case AlertType.water:    return Colors.blueAccent;
+      case AlertType.light:    return Colors.purpleAccent;
+      case AlertType.distance: return Colors.tealAccent;
+      case AlertType.system:   return Colors.blueGrey;
     }
   }
 
   IconData get _typeIcon {
     switch (alert.type) {
-      case AlertType.fire:   return Icons.local_fire_department_rounded;
-      case AlertType.gas:    return Icons.air_rounded;
-      case AlertType.water:  return Icons.water_rounded;
-      case AlertType.light:  return Icons.lightbulb_rounded;
-      case AlertType.system: return Icons.settings_rounded;
+      case AlertType.fire:     return Icons.local_fire_department_rounded;
+      case AlertType.gas:      return Icons.air_rounded;
+      case AlertType.water:    return Icons.water_rounded;
+      case AlertType.light:    return Icons.lightbulb_rounded;
+      case AlertType.distance: return Icons.settings_input_antenna_rounded;
+      case AlertType.system:   return Icons.settings_rounded;
     }
   }
 
   String _timeAgo() {
     final diff = DateTime.now().difference(alert.timestamp);
-    if (diff.inMinutes < 1)  return 'JUST NOW';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}M AGO';
-    if (diff.inHours < 24)   return '${diff.inHours}H AGO';
-    return '${diff.inDays}D AGO';
+    if (diff.inMinutes < 1)  return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24)   return '${diff.inHours}h ago';
+    return '${diff.inDays}d ago';
   }
 
   @override
   Widget build(BuildContext context) {
     final color = alert.isResolved ? DesignTokens.textMuted : _typeColor;
     
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: DesignTokens.card.withValues(alpha: alert.isResolved ? 0.4 : 0.85),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withValues(alpha: alert.isResolved ? 0.2 : 0.4),
-          width: 1.2,
-        ),
-        boxShadow: [
-          if (!alert.isResolved)
-            BoxShadow(
-              color: color.withValues(alpha: 0.12),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          const BoxShadow(
-            color: Color(0x77000000),
-            blurRadius: 16, offset: Offset(0, 8),
-          ),
-        ],
-        gradient: !alert.isResolved ? LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            color.withValues(alpha: 0.12),
-            DesignTokens.card.withValues(alpha: 0.4),
-          ],
-        ) : null,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          // Background subtle pattern or glow
-          if (!alert.isResolved)
-            Positioned(
-              top: -20, right: -20,
-              child: Container(
-                width: 60, height: 60,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.05),
-                  shape: BoxShape.circle,
-                ),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withAlpha((255 * 0.1).toInt()),
+                shape: BoxShape.circle,
               ),
+              child: Icon(_typeIcon, color: color, size: 20),
             ),
-          
-          Padding(
-            padding: const EdgeInsets.all(18),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Icon block
-                Container(
-                  width: 44, height: 44,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
-                  ),
-                  child: Icon(_typeIcon, color: color, size: 20),
-                ),
-                const SizedBox(width: 18),
-                
-                // Content
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Text(alert.typeLabel.toUpperCase(),
-                            style: TextStyle(
-                              color: color, 
-                              fontSize: 10, 
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 2,
-                              fontFamily: 'RobotoMono',
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(_timeAgo(),
-                            style: TextStyle(
-                              color: DesignTokens.textMuted,
-                              fontSize: 9,
-                              fontFamily: 'RobotoMono',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: color.withValues(alpha: 0.4), width: 0.5),
-                            ),
-                            child: Text(alert.severityLabel,
-                              style: TextStyle(color: color, fontSize: 8, fontWeight: FontWeight.w900, fontFamily: 'RobotoMono'),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(alert.nodeLocation.toUpperCase(),
-                              style: TextStyle(
-                                color: DesignTokens.textSecondary,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                                fontFamily: 'RobotoMono',
-                              ),
-                              maxLines: 1, overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      Text(alert.message,
-                        style: TextStyle(
-                          color: DesignTokens.textPrimary.withValues(alpha: alert.isResolved ? 0.6 : 0.95),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          height: 1.5,
-                          fontFamily: 'Roboto',
+                      Text(
+                        alert.typeLabel.toUpperCase(),
+                        style: GoogleFonts.outfit(
+                          color: color, 
+                          fontSize: 12, 
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
                         ),
                       ),
-                      const SizedBox(height: 18),
-                      Row(
-                        children: [
-                          StatusBadge(
-                            status: alert.isResolved ? SensorStatus.safe : SensorStatus.alert,
-                            compact: true,
-                          ),
-                          const Spacer(),
-                          if (!alert.isResolved && onResolve != null)
-                            _ResolveButton(onTap: onResolve!, color: DesignTokens.safe),
-                        ],
+                      Text(
+                        _timeAgo(),
+                        style: GoogleFonts.outfit(
+                          color: DesignTokens.textMuted,
+                          fontSize: 11,
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ResolveButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final Color color;
-  const _ResolveButton({required this.onTap, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withValues(alpha: 0.5)),
-          boxShadow: [
-            BoxShadow(color: color.withValues(alpha: 0.1), blurRadius: 10, spreadRadius: -2),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.check_rounded, color: color, size: 14),
-            const SizedBox(width: 8),
-            Text('RESOLVE',
-              style: TextStyle(
-                color: color,
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.5,
-                fontFamily: 'RobotoMono',
+                  const SizedBox(height: 4),
+                  Text(
+                    alert.nodeLocation,
+                    style: GoogleFonts.outfit(
+                      color: DesignTokens.textSecondary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    alert.message,
+                    style: GoogleFonts.outfit(
+                      color: DesignTokens.textPrimary,
+                      fontSize: 14,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      StatusBadge(
+                        status: alert.isResolved ? SensorStatus.safe : SensorStatus.alert,
+                        compact: true,
+                      ),
+                      if (!alert.isResolved && onResolve != null)
+                        TextButton.icon(
+                          onPressed: onResolve,
+                          icon: const Icon(Icons.check_rounded, size: 16),
+                          label: const Text('Resolve'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: DesignTokens.safe,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            textStyle: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

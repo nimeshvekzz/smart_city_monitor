@@ -63,7 +63,7 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off_rounded, size: 48, color: DesignTokens.textMuted.withValues(alpha: 0.3)),
+            Icon(Icons.search_off_rounded, size: 48, color: DesignTokens.textMuted.withAlpha((255 * 0.3).toInt())),
             const SizedBox(height: 16),
             Text('NO MATCHING NODES',
               style: TextStyle(color: DesignTokens.textMuted, fontFamily: 'RobotoMono', fontSize: 12, letterSpacing: 1),
@@ -85,11 +85,11 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
             leading: Container(
               width: 40, height: 40,
               decoration: BoxDecoration(
-                color: DesignTokens.cyan.withValues(alpha: 0.1),
+                color: DesignTokens.primary.withAlpha((255 * 0.1).toInt()),
                 borderRadius: DesignTokens.r8,
-                border: Border.all(color: DesignTokens.cyan.withValues(alpha: 0.3)),
+                border: Border.all(color: DesignTokens.primary.withAlpha((255 * 0.3).toInt())),
               ),
-              child: const Icon(Icons.router_rounded, color: DesignTokens.cyan, size: 20),
+              child: const Icon(Icons.router_rounded, color: DesignTokens.primary, size: 20),
             ),
             title: Text(node.id, 
               style: TextStyle(color: DesignTokens.textPrimary, fontWeight: FontWeight.bold, fontFamily: 'RobotoMono'),
