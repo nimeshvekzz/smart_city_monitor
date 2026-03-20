@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import '../models/sensor_node.dart';
-import '../services/data_service.dart';
-import '../theme/design_tokens.dart';
-import '../screens/node_detail_screen.dart';
+import 'package:smart_city_monitor/core/models/sensor_node.dart';
+import 'package:smart_city_monitor/core/services/data_service.dart';
+import 'package:smart_city_monitor/ui/theme/design_tokens.dart';
+import 'package:smart_city_monitor/ui/screens/node_detail_screen.dart';
 
 class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
   final DataService _data = DataService();
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    final base = DesignTokens.isDark ? ThemeData.dark() : ThemeData.light();
+    final base = Theme.of(context);
     return base.copyWith(
-      scaffoldBackgroundColor: DesignTokens.bg,
+      scaffoldBackgroundColor: DesignTokens.bg(context),
       appBarTheme: AppBarTheme(
-        backgroundColor: DesignTokens.surface,
+        backgroundColor: DesignTokens.surface(context),
         elevation: 0,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle: TextStyle(color: DesignTokens.textMuted, fontFamily: 'RobotoMono', fontSize: 16),
+        hintStyle: TextStyle(color: DesignTokens.textMuted(context), fontFamily: 'RobotoMono', fontSize: 16),
         border: InputBorder.none,
       ),
     );
@@ -28,7 +28,7 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: Icon(Icons.clear_rounded, color: DesignTokens.textSecondary),
+          icon: Icon(Icons.clear_rounded, color: DesignTokens.textSecondary(context)),
           onPressed: () => query = '',
         ),
     ];
@@ -37,7 +37,7 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back_ios_new_rounded, color: DesignTokens.textPrimary, size: 20),
+      icon: Icon(Icons.arrow_back_ios_new_rounded, color: DesignTokens.textPrimary(context), size: 20),
       onPressed: () => close(context, null),
     );
   }
@@ -63,10 +63,10 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off_rounded, size: 48, color: DesignTokens.textMuted.withAlpha((255 * 0.3).toInt())),
+            Icon(Icons.search_off_rounded, size: 48, color: DesignTokens.textMuted(context).withAlpha((255 * 0.3).toInt())),
             const SizedBox(height: 16),
             Text('NO MATCHING NODES',
-              style: TextStyle(color: DesignTokens.textMuted, fontFamily: 'RobotoMono', fontSize: 12, letterSpacing: 1),
+              style: TextStyle(color: DesignTokens.textMuted(context), fontFamily: 'RobotoMono', fontSize: 12, letterSpacing: 1),
             ),
           ],
         ),
@@ -74,7 +74,7 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
     }
 
     return Container(
-      color: DesignTokens.bg,
+      color: DesignTokens.bg(context),
       child: ListView.builder(
         itemCount: matches.length,
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -85,19 +85,19 @@ class NodeSearchDelegate extends SearchDelegate<SensorNode?> {
             leading: Container(
               width: 40, height: 40,
               decoration: BoxDecoration(
-                color: DesignTokens.primary.withAlpha((255 * 0.1).toInt()),
+                color: DesignTokens.primary(context).withAlpha((255 * 0.1).toInt()),
                 borderRadius: DesignTokens.r8,
-                border: Border.all(color: DesignTokens.primary.withAlpha((255 * 0.3).toInt())),
+                border: Border.all(color: DesignTokens.primary(context).withAlpha((255 * 0.3).toInt())),
               ),
-              child: const Icon(Icons.router_rounded, color: DesignTokens.primary, size: 20),
+              child: Icon(Icons.router_rounded, color: DesignTokens.primary(context), size: 20),
             ),
             title: Text(node.id, 
-              style: TextStyle(color: DesignTokens.textPrimary, fontWeight: FontWeight.bold, fontFamily: 'RobotoMono'),
+              style: TextStyle(color: DesignTokens.textPrimary(context), fontWeight: FontWeight.bold, fontFamily: 'RobotoMono'),
             ),
             subtitle: Text(node.location,
-              style: TextStyle(color: DesignTokens.textSecondary, fontSize: 11, letterSpacing: 0.5),
+              style: TextStyle(color: DesignTokens.textSecondary(context), fontSize: 11, letterSpacing: 0.5),
             ),
-            trailing: Icon(Icons.arrow_forward_ios_rounded, color: DesignTokens.textMuted, size: 14),
+            trailing: Icon(Icons.arrow_forward_ios_rounded, color: DesignTokens.textMuted(context), size: 14),
             onTap: () {
               close(context, node);
               Navigator.push(context, MaterialPageRoute(builder: (_) => NodeDetailScreen(node: node)));

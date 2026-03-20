@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../models/sensor_node.dart';
-import '../theme/design_tokens.dart';
-import 'status_badge.dart';
+import 'package:smart_city_monitor/core/models/sensor_node.dart';
+import 'package:smart_city_monitor/ui/theme/design_tokens.dart';
+import 'package:smart_city_monitor/ui/widgets/status_badge.dart';
 
 class SensorCard extends StatelessWidget {
   final String label;
@@ -18,15 +18,15 @@ class SensorCard extends StatelessWidget {
     this.onTap,
   });
 
-  Color _statusColor(SensorStatus s) => switch (s) {
-    SensorStatus.safe    => DesignTokens.safe,
-    SensorStatus.warning => DesignTokens.warning,
-    SensorStatus.alert   => DesignTokens.alert,
+  Color _statusColor(BuildContext context, SensorStatus s) => switch (s) {
+    SensorStatus.safe    => DesignTokens.safe(context),
+    SensorStatus.warning => DesignTokens.warning(context),
+    SensorStatus.alert   => DesignTokens.alert(context),
   };
 
   @override
   Widget build(BuildContext context) {
-    final color = _statusColor(data.status);
+    final color = _statusColor(context, data.status);
     
     return InkWell(
       onTap: onTap,
@@ -34,9 +34,9 @@ class SensorCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: DesignTokens.surface,
+          color: DesignTokens.surface(context),
           borderRadius: DesignTokens.r12,
-          border: Border.all(color: DesignTokens.border),
+          border: Border.all(color: DesignTokens.border(context)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,7 @@ class SensorCard extends StatelessWidget {
             Text(
               '${data.value.toStringAsFixed(1)} ${data.unit}',
               style: GoogleFonts.outfit(
-                color: DesignTokens.textPrimary,
+                color: DesignTokens.textPrimary(context),
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -61,7 +61,7 @@ class SensorCard extends StatelessWidget {
             Text(
               label,
               style: GoogleFonts.outfit(
-                color: DesignTokens.textSecondary,
+                color: DesignTokens.textSecondary(context),
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),

@@ -11,7 +11,6 @@ class AppTheme {
     // Modern Neutral Palette
     final bg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
     final surface = isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
-    final card = isDark ? const Color(0xFF334155) : const Color(0xFFFFFFFF);
     final text = isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
     final subtext = isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
     final border = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
@@ -27,14 +26,23 @@ class AppTheme {
         surface: surface,
         onSurface: text,
         outline: border,
+        surfaceContainer: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF),
       ),
       scaffoldBackgroundColor: bg,
       textTheme: GoogleFonts.outfitTextTheme(base.textTheme).apply(
         bodyColor: text,
         displayColor: text,
       ),
+      extensions: [
+        StatusColors(
+          safe: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
+          warning: isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706),
+          alert: isDark ? const Color(0xFFEF4444) : const Color(0xFFDC2626),
+          neutral: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+        ),
+      ],
       cardTheme: CardThemeData(
-        color: card,
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -42,7 +50,7 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: surface,
+        backgroundColor: bg,
         foregroundColor: text,
         elevation: 0,
         centerTitle: false,
@@ -68,4 +76,41 @@ class AppTheme {
       ),
     );
   }
+}
+
+class StatusColors extends ThemeExtension<StatusColors> {
+  final Color safe;
+  final Color warning;
+  final Color alert;
+  final Color neutral;
+
+  StatusColors({
+    required this.safe,
+    required this.warning,
+    required this.alert,
+    required this.neutral,
+  });
+
+  @override
+  StatusColors copyWith({Color? safe, Color? warning, Color? alert, Color? neutral}) {
+    return StatusColors(
+      safe: safe ?? this.safe,
+      warning: warning ?? this.warning,
+      alert: alert ?? this.alert,
+      neutral: neutral ?? this.neutral,
+    );
+  }
+
+  @override
+  StatusColors lerp(ThemeExtension<StatusColors>? other, double t) {
+    if (other is! StatusColors) return this;
+    return StatusColors(
+      safe: Color.lerp(safe, other.safe, t)!,
+      warning: Color.lerp(warning, other.warning, t)!,
+      alert: Color.lerp(alert, other.alert, t)!,
+      neutral: Color.lerp(neutral, other.neutral, t)!,
+    );
+  }
+
+  static StatusColors of(BuildContext context) => Theme.of(context).extension<StatusColors>()!;
 }

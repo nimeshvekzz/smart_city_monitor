@@ -1,0 +1,9 @@
+﻿Analyzing smart_city_monitor...
+
+warning - lib\ui\screens\agent_detail_screen.dart:14:16 - The value of the field 'cyan' isn't used. Try removing the field, or using it. - unused_field
+warning - lib\ui\screens\agent_detail_screen.dart:15:16 - The value of the field 'blue' isn't used. Try removing the field, or using it. - unused_field
+   info - lib\ui\screens\agent_detail_screen.dart:254:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\ui\screens\agent_detail_screen.dart:255:34 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\ui\screens\agent_detail_screen.dart:256:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+
+5 issues found.

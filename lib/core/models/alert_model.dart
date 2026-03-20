@@ -9,6 +9,9 @@ class AlertModel {
   final String message;
   final DateTime timestamp;
   bool isResolved;
+  bool? _hasBeenDispatched;
+  bool get hasBeenDispatched => _hasBeenDispatched ?? false;
+  set hasBeenDispatched(bool v) => _hasBeenDispatched = v;
 
   AlertModel({
     required this.id,
@@ -18,7 +21,8 @@ class AlertModel {
     required this.message,
     required this.timestamp,
     this.isResolved = false,
-  });
+    bool hasBeenDispatched = false,
+  }) : _hasBeenDispatched = hasBeenDispatched;
 
   String get typeLabel {
     switch (type) {
@@ -35,7 +39,7 @@ class AlertModel {
     switch (type) {
       case AlertType.fire:     return AlertSeverity.high;
       case AlertType.gas:      return AlertSeverity.medium;
-      case AlertType.water:    return AlertSeverity.medium;
+      case AlertType.water:    return AlertSeverity.high;
       case AlertType.light:    return AlertSeverity.low;
       case AlertType.distance: return AlertSeverity.high;
       case AlertType.system:   return AlertSeverity.info;

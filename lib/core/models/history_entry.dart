@@ -1,5 +1,6 @@
 class HistoryEntry {
   final String nodeId;
+  final String nodeLocation;
   final DateTime timestamp;
   final double fire;
   final double gas;
@@ -9,6 +10,7 @@ class HistoryEntry {
 
   const HistoryEntry({
     required this.nodeId,
+    required this.nodeLocation,
     required this.timestamp,
     required this.fire,
     required this.gas,

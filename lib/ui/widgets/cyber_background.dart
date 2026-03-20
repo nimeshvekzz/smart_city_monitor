@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/design_tokens.dart';
+import 'package:smart_city_monitor/ui/theme/design_tokens.dart';
 
 class CyberBackground extends StatelessWidget {
   const CyberBackground({super.key});
@@ -15,9 +15,9 @@ class CyberBackground extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                DesignTokens.bg,
-                DesignTokens.surface,
-                DesignTokens.bg,
+                DesignTokens.bg(context),
+                DesignTokens.surface(context),
+                DesignTokens.bg(context),
               ],
             ),
           ),
@@ -28,7 +28,7 @@ class CyberBackground extends StatelessWidget {
           right: -100,
           child: _CircularDecorator(
             size: 300,
-            color: DesignTokens.primary.withAlpha((255 * 0.05).toInt()),
+            color: DesignTokens.primary(context).withAlpha((255 * 0.05).toInt()),
           ),
         ),
         Positioned(
@@ -36,7 +36,7 @@ class CyberBackground extends StatelessWidget {
           left: -150,
           child: _CircularDecorator(
             size: 400,
-            color: DesignTokens.primary.withAlpha((255 * 0.03).toInt()),
+            color: DesignTokens.primary(context).withAlpha((255 * 0.03).toInt()),
           ),
         ),
         // Grid pattern overlay
@@ -44,7 +44,7 @@ class CyberBackground extends StatelessWidget {
           opacity: 0.05,
           child: CustomPaint(
             size: Size.infinite,
-            painter: _GridPainter(),
+            painter: _GridPainter(DesignTokens.primary(context)),
           ),
         ),
       ],
@@ -72,10 +72,13 @@ class _CircularDecorator extends StatelessWidget {
 }
 
 class _GridPainter extends CustomPainter {
+  final Color color;
+  _GridPainter(this.color);
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = DesignTokens.primary
+      ..color = color
       ..strokeWidth = 0.5;
 
     const spacing = 40.0;

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'theme/app_theme.dart';
-import 'theme/design_tokens.dart';
-import 'services/data_service.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/alerts_screen.dart';
-import 'screens/history_screen.dart';
-import 'screens/profile_screen.dart';
-
-import 'widgets/connection_error_screen.dart';
+import 'package:smart_city_monitor/ui/theme/app_theme.dart';
+import 'package:smart_city_monitor/ui/theme/design_tokens.dart';
+import 'package:smart_city_monitor/core/services/data_service.dart';
+import 'package:smart_city_monitor/ui/screens/dashboard_screen.dart';
+import 'package:smart_city_monitor/ui/screens/alerts_screen.dart';
+import 'package:smart_city_monitor/ui/screens/history_screen.dart';
+import 'package:smart_city_monitor/ui/screens/profile_screen.dart';
+import 'package:smart_city_monitor/ui/screens/connection_error_screen.dart';
+import 'package:smart_city_monitor/ui/screens/auth_screen.dart';
 
 void main() {
   runApp(const SmartCityApp());
@@ -23,27 +23,34 @@ class SmartCityApp extends StatefulWidget {
 }
 
 class _SmartCityAppState extends State<SmartCityApp> {
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode _themeMode = ThemeMode.system;
+  bool _isLoggedIn = false;
 
   void _toggleTheme() {
     setState(() {
       _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-      DesignTokens.isDark = _themeMode == ThemeMode.dark;
     });
   }
+
+  void _login() => setState(() => _isLoggedIn = true);
+  void _logout() => setState(() => _isLoggedIn = false);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: ValueKey(_isLoggedIn),
       title: 'Smart City Monitor',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: _themeMode,
-      home: MainShell(
-        onToggleTheme: _toggleTheme,
-        themeMode: _themeMode,
-      ),
+      home: _isLoggedIn 
+        ? MainShell(
+            onToggleTheme: _toggleTheme,
+            themeMode: _themeMode,
+            onLogout: _logout,
+          )
+        : AuthScreen(onLoginSuccess: _login),
     );
   }
 }
@@ -51,7 +58,8 @@ class _SmartCityAppState extends State<SmartCityApp> {
 class MainShell extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final ThemeMode themeMode;
-  const MainShell({super.key, required this.onToggleTheme, required this.themeMode});
+  final VoidCallback onLogout;
+  const MainShell({super.key, required this.onToggleTheme, required this.themeMode, required this.onLogout});
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -75,20 +83,24 @@ class _MainShellState extends State<MainShell> {
               style: GoogleFonts.outfit(
                 fontSize: 14, 
                 fontWeight: FontWeight.w500,
-                color: DesignTokens.textPrimary,
+                color: DesignTokens.textPrimary(context),
               ),
             ),
-            backgroundColor: DesignTokens.surface,
+            backgroundColor: DesignTokens.surface(context),
             behavior: SnackBarBehavior.floating,
             elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: DesignTokens.border),
+              side: BorderSide(color: DesignTokens.border(context)),
             ),
             action: SnackBarAction(
               label: 'VIEW',
-              textColor: DesignTokens.primary,
-              onPressed: () => setState(() => _currentIndex = 1),
+              textColor: DesignTokens.primary(context),
+              onPressed: () {
+                if (mounted) {
+                  setState(() => _currentIndex = 1);
+                }
+              },
             ),
           ),
         );
@@ -123,12 +135,33 @@ class _MainShellState extends State<MainShell> {
       ProfileScreen(
         onToggleTheme: widget.onToggleTheme, 
         themeMode: widget.themeMode,
+        onLogout: widget.onLogout,
         onSimulateDisconnect: () => setState(() => _hasError = true),
       ),
     ];
 
     return Scaffold(
-      body: screens[_currentIndex],
+      body: AnimatedSwitcher(
+        duration: DesignTokens.normal,
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.02, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            ),
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey<int>(_currentIndex),
+          child: screens[_currentIndex],
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) => setState(() => _currentIndex = index),
@@ -144,16 +177,16 @@ class _MainShellState extends State<MainShell> {
 
   Widget _buildLoadingSplash() {
     return Scaffold(
-      backgroundColor: DesignTokens.bg,
+      backgroundColor: DesignTokens.bg(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.security_rounded, color: DesignTokens.primary, size: 48),
+            Icon(Icons.security_rounded, color: DesignTokens.primary(context), size: 48),
             const SizedBox(height: 24),
             Text('SMART CITY MONITOR',
               style: GoogleFonts.outfit(
-                color: DesignTokens.textPrimary,
+                color: DesignTokens.textPrimary(context),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1.2,
@@ -163,8 +196,8 @@ class _MainShellState extends State<MainShell> {
             SizedBox(
               width: 140,
               child: LinearProgressIndicator(
-                backgroundColor: DesignTokens.border,
-                valueColor: AlwaysStoppedAnimation(DesignTokens.primary),
+                backgroundColor: DesignTokens.border(context),
+                valueColor: AlwaysStoppedAnimation(DesignTokens.primary(context)),
                 minHeight: 2,
               ),
             ),
